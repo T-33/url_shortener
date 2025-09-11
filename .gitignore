@@ -1,0 +1,28 @@
+# ───── General ─────
+*.log
+*.env
+.env.*
+.DS_Store
+Thumbs.db
+*.swp
+
+# ───── Backend (Django + Wagtail + PostgreSQL) ─────
+__pycache__/
+**/*.py[cod]
+*.sqlite3
+*.sqlite3-journal
+.env
+.venv/
+venv/
+env/
+media/
+static_root/
+staticfiles/
+.mypy_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ───── IDE / Editor ─────
+.vscode/
+.idea/
