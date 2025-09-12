@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
 
     'apps.users.apps.UsersConfig',
+    'apps.links.apps.LinksConfig',
 ]
 
 AUTH_USER_MODEL = 'users.User'
