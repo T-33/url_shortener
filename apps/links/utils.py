@@ -1,20 +1,9 @@
 import string
+import random
 
-# assumption: num is >= 0
-def to_base62(num: int) -> str:
+def generate_random_short_code(length: int = 7) -> str:
+    """
+    Generates a random alphanumeric short code of given length.
+    """
     chars = string.digits + string.ascii_letters
-    if num == 0:
-        return chars[0]
-    base62 = []
-    while num > 0:
-        num, rem = divmod(num, 62)
-        base62.append(chars[rem])
-    return "".join(reversed(base62))
-
-def from_base62(s: str) -> int:
-    chars = string.digits + string.ascii_letters
-    char_map = {char: i for i, char in enumerate(chars)}
-    num = 0
-    for char in s:
-        num = num * 62 + char_map[char]
-    return num
+    return "".join(random.choice(chars) for _ in range(length))
