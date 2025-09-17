@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 
+from .utils import generate_random_short_code
+from .constants import SHORT_CODE_LENGTH
 User = get_user_model()
 
 class Link(models.Model):
@@ -8,9 +10,17 @@ class Link(models.Model):
     Represents a single shortened link.
     """
     original_url = models.URLField()
-    short_code = models.CharField(max_length=15, unique=True, db_index=True, null=True, blank=True)
+    short_code = models.CharField(max_length=15, unique=True, db_index=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='links')
+
+    def save(self, *args, **kwargs):
+        if not self.short_code:
+            self.short_code = generate_random_short_code(length=SHORT_CODE_LENGTH)
+            while Link.objects.filter(short_code=self.short_code).exists():
+                self.short_code = generate_random_short_code(SHORT_CODE_LENGTH)
+
+        super().save(*args, **kwargs)
 
 class Click(models.Model):
     """
