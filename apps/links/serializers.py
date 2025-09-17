@@ -3,6 +3,7 @@ from rest_framework.serializers import ModelSerializer
 
 from .models import Link
 from .constants import RESERVED_WORDS
+from .utils import is_valid_short_code_name
 
 class LinkSerializer(ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
@@ -23,6 +24,9 @@ class LinkSerializer(ModelSerializer):
         """
         if not value:
             return value
+
+        if not is_valid_short_code_name(value):
+            raise serializers.ValidationError('Short code must contain only alphanumerical characters and hyphen, underscore.')
 
         if Link.objects.filter(short_code=value).exists():
             raise serializers.ValidationError('Specified short code is already taken. Please choose another.')
