@@ -4,7 +4,7 @@ from apps.links.factories import UserFactory, LinkFactory
 from apps.links.models import Link
 
 @pytest.mark.django_db
-class TestLinkSerializers:
+class TestLinkApi:
     def setup_method(self):
         self.user = UserFactory()
         self.client = APIClient()
@@ -39,3 +39,17 @@ class TestLinkSerializers:
         created_link = Link.objects.first()
         assert created_link.owner == self.user
         assert created_link.original_url == payload['original_url']
+
+    def test_regular_user_only_sees_his_own_links(self):
+        """Test that a non-admin user can view only links created by him."""
+        auth_user_link = LinkFactory(owner=self.user)
+        other_user_link = LinkFactory(owner=UserFactory())
+
+        response = self.client.get('/api/v1/links/')
+
+        assert response.status_code == 200
+        assert len(response.data) == 1
+
+        response_ids = [item['id'] for item in response.data]
+        assert other_user_link.id not in response_ids
+
