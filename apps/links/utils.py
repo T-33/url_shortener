@@ -17,6 +17,6 @@ def generate_random_short_code(length: int = 7) -> str:
 
 def is_valid_short_code_name(short_code: str) -> bool:
     """
-    Checks if provided short_code doesn't contain characters with special url meaning.
+    Checks if provided short_code doesn't contain characters with 'special url meaning'.
     """
     return re.sub(r'[_-]', '', short_code).isalnum()

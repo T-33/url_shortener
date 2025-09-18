@@ -21,24 +21,33 @@ def link_redirect_view(request, short_code: str):
     return redirect(link.original_url)
 
 class LinkViewset(ModelViewSet):
+    """
+    API endpoint  that allows links to be viewed and edited.
+        - Authenticated users can create links.
+        - Users can only view and edit their own links.
+        - Staff users can view and edit all links.
+    """
     queryset = Link.objects.all()
     serializer_class = LinkSerializer
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
+        """Associate the link with the currently authenticated user."""
         user = self.request.user
         serializer.save(owner=user)
 
     def get_queryset(self):
-
+        """
+        Dynamically filter the queryset based on the user.
+        """
         user = self.request.user
-
-        if user.is_staff:
-            return Link.objects.all()
-        else:
-            return Link.objects.filter(owner=user)
+        return Link.objects.for_user(user)
 
 class ClickViewset(ModelViewSet):
+    """
+    API endpoint that allow clicks to be viewed and edited.
+        - Only admins can interact with clicks.
+    """
     queryset = Click.objects.all()
     serializer_class = ClickSerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
