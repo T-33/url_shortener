@@ -1,10 +1,10 @@
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404, redirect
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
 from .models import Link, Click
-from .serializers import LinkSerializer
+from .serializers import LinkSerializer, ClickSerializer
 
 User = get_user_model()
 
@@ -19,6 +19,7 @@ def link_redirect_view(request, short_code: str):
     )
 
     return redirect(link.original_url)
+
 class LinkViewset(ModelViewSet):
     queryset = Link.objects.all()
     serializer_class = LinkSerializer
@@ -39,4 +40,5 @@ class LinkViewset(ModelViewSet):
 
 class ClickViewset(ModelViewSet):
     queryset = Click.objects.all()
-    permission_classes = [IsAuthenticated]
+    serializer_class = ClickSerializer
+    permission_classes = [IsAuthenticated, IsAdminUser]

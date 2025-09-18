@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 
-from .models import Link
+from .models import Link, Click
 from .constants import RESERVED_WORDS
 from .utils import is_valid_short_code_name
 
@@ -35,3 +35,10 @@ class LinkSerializer(ModelSerializer):
             raise serializers.ValidationError('Specified short code is a reserved word and cannot be chosen. Please choose another.')
 
         return value
+
+class ClickSerializer(ModelSerializer):
+    link = LinkSerializer()
+
+    class Meta:
+        model = Click
+        fields = ['link', 'clicked_at', 'ip_address', 'user_agent']
